@@ -1,0 +1,24 @@
+name: Build APK
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install Bubblewrap
+        run: npm install -g @bubblewrap/cli
+      - name: Build APK
+        run: |
+          bubblewrap init --manifest https://fofabdoul07.github.io/tontine-app/manifest.json
+          bubblewrap build
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: tontine-digital.apk
+          path: app-release-signed.apk
