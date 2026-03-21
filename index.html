@@ -54,11 +54,15 @@ const removeToken = () => localStorage.removeItem('td_token');
   const opts = { method, headers: {'Content-Type':'application/json','Authorization':`Bearer ${getToken()}`} };
   if(body) opts.body = JSON.stringify(body);
   const url = 'https://tontine-digital-backend-2.onrender.com' + path;
-  const res = await fetch(url, opts);
-  const data = await res.json();
-  if(!res.ok) throw new Error(data.message||'Erreur serveur');
-  return data;
-};
+  const res = await fetch(API_BASE+path, opts);
+if(!res.ok){
+  let errMsg='Erreur serveur';
+  try{ const d=await res.json(); errMsg=d.message||errMsg; }catch(e){}
+  throw new Error(errMsg);
+}
+  let data;
+try{ data = await res.json(); }
+catch(e){ throw new Error('Erreur connexion serveur'); }
 
 /* ── COMPOSANTS ── */
 const Card = ({children, style, onClick}) => (
